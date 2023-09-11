@@ -145,7 +145,7 @@ colors = Colors()
 
 
 
-
+# See modkeys by running: xmodmap
 mod = "mod4"
 alt = "mod1"
 
@@ -156,35 +156,20 @@ terminal = "gnome-terminal --hide-menubar"
 # Keys
 # =======================
 
+# A list of available commands that can be bound to keys can be found
+# at https://docs.qtile.org/en/latest/manual/config/lazy.html       
+
+# List of special keys:
+# https://github.com/qtile/qtile/blob/master/libqtile/backend/x11/xkeysyms.py
+
+
 keys = [
-    # A list of available commands that can be bound to keys can be found
-    # at https://docs.qtile.org/en/latest/manual/config/lazy.html
-    
-    # Switch between windows   
-    Key([mod], "h", lazy.layout.left(), desc="Move focus to left"),
-    Key([mod], "l", lazy.layout.right(), desc="Move focus to right"),
-    Key([mod], "j", lazy.layout.down(), desc="Move focus down"),
-    Key([mod], "k", lazy.layout.up(), desc="Move focus up"),
-    Key([mod], "space", lazy.layout.next(), desc="Move window focus to other window"),
-    
+
     # Qtile basic
     Key([mod], "Return", lazy.spawn(terminal), desc="Launch terminal"),
     Key([mod, "control"], "r", lazy.reload_config(), desc="Reload the config"),
     Key([mod], "w", lazy.window.kill(), desc="Kill focused window"),
-
-    # Gnome transfered
-    # Key([mod], 'l', lazy.spawn(Commands.lock)),
     Key([alt, "control"], "t", lazy.spawn(terminal), desc="Launch terminal - alt command"),
-
-    # kp*   tiling mode
-    # kp/   tiling layout
-    # alt tab                  switch to same application
-    # ctrl alt arrow           move and resscale window
-
-
-
-    # List of special keys:
-    # https://github.com/qtile/qtile/blob/master/libqtile/backend/x11/xkeysyms.py
 
     # Sound
     Key([], 'XF86AudioRaiseVolume', lazy.spawn(Commands.volume_up)),
@@ -238,16 +223,16 @@ def ungrab_nx_chord(qtile, number_of_ungraps):
 
 keys.extend([
     KeyChord([mod], "tab", [
-        Key([], "h", lazy.layout.shuffle_left(), desc="Move window to the left"),
-        Key([], "l", lazy.layout.shuffle_right(), desc="Move window to the right"),
-        Key([], "j", lazy.layout.shuffle_down(), desc="Move window down"),
-        Key([], "k", lazy.layout.shuffle_up(), desc="Move window up"),
+        Key([], "j", lazy.layout.shuffle_left(), desc="Move window to the left"),
+        Key([], "ae", lazy.layout.shuffle_right(), desc="Move window to the right"),
+        Key([], "k", lazy.layout.shuffle_down(), desc="Move window down"),
+        Key([], "l", lazy.layout.shuffle_up(), desc="Move window up"),
         Key([], "Return", lazy.ungrab_all_chords()),
         KeyChord([mod], "tab", [
-            Key([], "h", lazy.layout.grow_left(), desc="Grow window to the left"),
-            Key([], "l", lazy.layout.grow_right(), desc="Grow window to the right"),
-            Key([], "j", lazy.layout.grow_down(), desc="Grow window down"),
-            Key([], "k", lazy.layout.grow_up(), desc="Grow window up"),
+            Key([], "j", lazy.layout.grow_left(), desc="Grow window to the left"),
+            Key([], "ae", lazy.layout.grow_right(), desc="Grow window to the right"),
+            Key([], "k", lazy.layout.grow_down(), desc="Grow window down"),
+            Key([], "l", lazy.layout.grow_up(), desc="Grow window up"),
             Key([], "Return", lazy.ungrab_all_chords()),
             KeyChord([mod], "tab", [
                     Key([], "r", lazy.layout.normalize(), desc="Reset all window sizes"),    
@@ -351,15 +336,48 @@ def down_group(qtile, pull_window=False):
 keys.extend([
         Key([mod, "control"], "left", lazy.screen.prev_group()),
         Key([mod, "control"], "right", lazy.screen.next_group()),
-        Key([alt, "control"], "left", left_group()),
-        Key([alt, "control"], "right", right_group()),
-        Key([alt, "control"], "up", up_group()),
-        Key([alt, "control"], "down", down_group()),
-        Key([alt, "control", "shift"], "left", left_group(pull_window=True)),
-        Key([alt, "control", "shift"], "right", right_group(pull_window=True)),
-        Key([alt, "control", "shift"], "up", up_group(pull_window=True)),
-        Key([alt, "control", "shift"], "down", down_group(pull_window=True)),
+        # Gnome controls
+        # Key([alt, "control"], "left", left_group()),
+        # Key([alt, "control"], "right", right_group()),
+        # Key([alt, "control"], "up", up_group()),
+        # Key([alt, "control"], "down", down_group()),
+        # Key([alt, "control", "shift"], "left", left_group(pull_window=True)),
+        # Key([alt, "control", "shift"], "right", right_group(pull_window=True)),
+        # Key([alt, "control", "shift"], "up", up_group(pull_window=True)),
+        # Key([alt, "control", "shift"], "down", down_group(pull_window=True)),
         ]),
+
+keys.extend([
+        Key([mod], "a", left_group()),
+        Key([mod], "s", down_group()),
+        Key([mod], "d", up_group()),
+        Key([mod], "f", right_group()),
+        Key([mod, "shift"], "a", left_group(pull_window=True)),
+        Key([mod, "shift"], "s", down_group(pull_window=True)),
+        Key([mod, "shift"], "d", up_group(pull_window=True)),
+        Key([mod, "shift"], "f", right_group(pull_window=True)),
+        Key([mod], "j", lazy.layout.grow_left()),
+        Key([mod], "k", lazy.layout.grow_down()),
+        Key([mod], "l", lazy.layout.grow_up()),
+        Key([mod], "ae", lazy.layout.grow_right()),
+        Key([mod, alt], "j", lazy.layout.shuffle_left()),
+        Key([mod, alt], "k", lazy.layout.shuffle_down()),
+        Key([mod, alt], "l", lazy.layout.shuffle_up()),
+        Key([mod, alt], "ae", lazy.layout.shuffle_right()),
+        Key([mod], "space", lazy.layout.next()),
+        ]),
+
+
+
+# Default qtile
+# keys.extend([
+#     # Switch between windows   
+#     Key([mod], "h", lazy.layout.left(), desc="Move focus to left"),
+#     Key([mod], "l", lazy.layout.right(), desc="Move focus to right"),
+#     Key([mod], "j", lazy.layout.down(), desc="Move focus down"),
+#     Key([mod], "k", lazy.layout.up(), desc="Move focus up"),
+#     Key([mod], "space", lazy.layout.next(), desc="Move window focus to other window"),
+#     ])
 
 
 # Scratchpads
