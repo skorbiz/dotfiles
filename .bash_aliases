@@ -1,45 +1,38 @@
 #!/bin/bash
 # set -euo pipefail
 
-#------------------- USAGE INSTRUCTION ---------------------- #
+#------------------- INSTAKK INSTRUCTION ---------------------- #
 #
 # Create symlink by:
 # ln -s ~/Dropbox/workspaces/dotfiles/.bash_aliases "$HOME" 
-# or copy the following code snippet to ./bashrc or .zshrc 
-# 
-#bashrc_extention="$HOME/Dropbox/workspaces/dotfiles/.bash_aliases"
-#if [ -f $bashrc_extention ]; then
-#   source $bashrc_extention
-#else
-#   echo "Failed to source $bashrc_extention"
-#fi
+# echo "source "$HOME/.bash_aliases" > .zshrc 
+#
 
+
+#------------------- Stuff to be included ------------------ #
 
 export PATH="$PATH:/home/johl/Apps/balena-cli/"
 export PATH="$PATH:/usr/local/go/bin"
 
-#------------------- Stuff to be included ------------------ #
+source "$HOME/Dropbox/workspaces/jsl_tools/env.bash"
 
-jsl_tools="$HOME/Dropbox/workspaces/jsl_tools/env.bash"
+# TRY #############################################################################
 
-if [ -f $jsl_tools ]; then
-  source $jsl_tools
-else
-  echo "Failed to source $jsl_tools"
-fi
+function try(){
+  export FZF_DEFAULT_COMMAND=echo
+  fzf -q "$*" --preview-window=up:99% --preview="eval {q}"
+}
+
+# Based on comments here:
+# https://www.reddit.com/r/commandline/comments/174t7y4/play_tui_playground_for_your_favorite_programs/
+# Useage example: try cat ~/.bashrc | grep HIST <Enter>
+# Type the search quiry and see how it changes in realtime  
 
 # GIT #############################################################################
-
-# %h  ref
-# %cr time
-# %s  msg
-# %an author
-# %d  merge
 
 # Makes git branch and other not use less the message can be displayed on an entire screen.
 # https://stackoverflow.com/questions/48341920/git-branch-command-behaves-like-less
 export LESS=-FRX
-
 
 function git_push_force_safer(){
   (set -x;  git push --force-with-lease)
@@ -52,6 +45,12 @@ function git_get_branch_name(){
 function git_log_folder(){
   (set -x; git log -- .)
 }
+
+# %h  ref
+# %cr time
+# %s  msg
+# %an author
+# %d  merge
 
 function git_log_short(){
   (set -x; git log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=short)

@@ -112,12 +112,8 @@ alias ohmyzsh="mate ~/.oh-my-zsh"
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-bashrc_extention="$HOME/Dropbox/workspaces/dotfiles/.bash_aliases"
-if [ -f $bashrc_extention ]; then
-   source $bashrc_extention
-else
-   echo "Failed to source $bashrc_extention"
-fi
+# Bash aliases
+source "$HOME/.bash_aliases"
 
 # Enable stacking autocompletion for docker plugin
 zstyle ':completion:*:*:docker:*' option-stacking yes
