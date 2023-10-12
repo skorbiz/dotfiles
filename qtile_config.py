@@ -223,16 +223,16 @@ def ungrab_nx_chord(qtile, number_of_ungraps):
 
 keys.extend([
     KeyChord([mod], "tab", [
-        Key([], "j", lazy.layout.shuffle_left(), desc="Move window to the left"),
-        Key([], "ae", lazy.layout.shuffle_right(), desc="Move window to the right"),
-        Key([], "k", lazy.layout.shuffle_down(), desc="Move window down"),
-        Key([], "l", lazy.layout.shuffle_up(), desc="Move window up"),
+        Key([], "a", lazy.layout.shuffle_left(), desc="Move window to the left"),
+        Key([], "s", lazy.layout.shuffle_up(), desc="Move window up"),
+        Key([], "d", lazy.layout.shuffle_down(), desc="Move window down"),
+        Key([], "f", lazy.layout.shuffle_right(), desc="Move window to the right"),
         Key([], "Return", lazy.ungrab_all_chords()),
         KeyChord([mod], "tab", [
-            Key([], "j", lazy.layout.grow_left(), desc="Grow window to the left"),
-            Key([], "ae", lazy.layout.grow_right(), desc="Grow window to the right"),
-            Key([], "k", lazy.layout.grow_down(), desc="Grow window down"),
-            Key([], "l", lazy.layout.grow_up(), desc="Grow window up"),
+            Key([], "a", lazy.layout.grow_left(), desc="Grow window to the left"),
+            Key([], "s", lazy.layout.grow_up(), desc="Grow window up"),
+            Key([], "d", lazy.layout.grow_down(), desc="Grow window down"),
+            Key([], "f", lazy.layout.grow_right(), desc="Grow window to the right"),
             Key([], "Return", lazy.ungrab_all_chords()),
             KeyChord([mod], "tab", [
                     Key([], "r", lazy.layout.normalize(), desc="Reset all window sizes"),    
@@ -257,25 +257,39 @@ keys.extend([
 ])
         
 
-# Default qtile groups
-# =======================
-
-groups = [Group(i) for i in "123456789"]
-
-for i in groups:
-    keys.extend(
-        [
-            # mod1 + letter of group = switch to group
-            # mod1 + shift + letter of group = switch to & move focused window to group
-            Key([mod], i.name, lazy.group[i.name].toscreen(), desc="Switch to group {}".format(i.name)),
-            Key([mod, "shift"], i.name, lazy.window.togroup(i.name, switch_group=True), desc="Switch to & move focused window to group {}".format(i.name),),
-        ]
-    )
-
 
 
 # Grid groups
 # =======================
+
+# groups = [Group("1"), Group("2"), Group("3"), Group("4"),
+#           Group("a"), Group("b"), Group("c"), Group("d"),
+#           Group("A"), Group("B"), Group("C"), Group("D")]
+
+# groups = [Group("⠾⠿"), Group("⠷⠿"), Group("⠿⠾"), Group("⠿⠷"),
+#           Group("⠽⠿"), Group("⠿⠯"), Group("⠽⠿"), Group("⠿⠯"),
+#           Group("⠻⠿"), Group("⠟⠿"), Group("⠿⠻"), Group("⠿⠟")]
+
+# groups = [Group("1⠆"), Group("2⠆"), Group("3⠆"), Group("4⠆"),
+#           Group("5⠅"), Group("6⠅"), Group("7⠅"), Group("8⠅"),
+#           Group("9⠆"), Group("10⠆"), Group("11⠆"), Group("12⠆")]
+
+# groups = [Group("🐬⠆"), Group("🐣⠆"), Group("🐢⠆"), Group("🐘⠆"),
+#           Group("🐬⠅"), Group("🐣⠅"), Group("🐢⠅"), Group("🐘⠅"),
+#           Group("🐬⠆"), Group("🐣⠆"), Group("🐢⠆"), Group("🐘⠆")]
+
+# groups = [Group("1🐬"), Group("2🐬"), Group("3🐬"), Group("4🐬"),
+#           Group("5🐘"), Group("6🐘"), Group("7🐘"), Group("8🐘"),
+#           Group("9🐢"), Group("10🐢"), Group("11🐢"), Group("12🐢")]
+
+groups = [Group("1🐬"), Group("2🐬"), Group("3🐬"), Group("4🐬"),
+          Group("1🐘"), Group("2🐘"), Group("3🐘"), Group("4🐘"),
+          Group("1🐢"), Group("2🐢"), Group("3🐢"), Group("4🐢")]
+
+# 🌿 🍀 🐌 🐣 🐙 🐢 🐋 🐸 🐧 🐬 🐲 🐀 🐘 🐝 🐥
+
+# ⠃   ⠅   ⠆
+# ⠟   ⠻   ⠷   ⠾   ⠯   ⠽   ⠿ 
 
 class Grid:
     rows = 3
@@ -333,9 +347,21 @@ def down_group(qtile, pull_window=False):
         switch_group(qtile, Grid.to_idx(row+1, col), pull_window)
 
 
+for i in range(1, 9):
+    keys.extend(
+        [
+            Key([mod], str(i), lazy.group[groups[i-1].name].toscreen()),
+            Key([mod, "shift"], str(i), lazy.window.togroup(groups[i-1].name, switch_group=True)),
+        ]
+    )
+
 keys.extend([
-        Key([mod, "control"], "left", lazy.screen.prev_group()),
-        Key([mod, "control"], "right", lazy.screen.next_group()),
+        # Key([mod, "control"], "left", lazy.screen.prev_group()),
+        # Key([mod, "control"], "right", lazy.screen.next_group()),
+        Key([mod, "control"], "left", left_group()),
+        Key([mod, "control"], "right", right_group()),
+        Key([mod, "control"], "up", up_group()),
+        Key([mod, "control"], "down", down_group()),
         # Gnome controls
         # Key([alt, "control"], "left", left_group()),
         # Key([alt, "control"], "right", right_group()),
@@ -348,23 +374,25 @@ keys.extend([
         ]),
 
 keys.extend([
-        Key([mod], "a", left_group()),
-        Key([mod], "s", down_group()),
-        Key([mod], "d", up_group()),
-        Key([mod], "f", right_group()),
-        Key([mod, "shift"], "a", left_group(pull_window=True)),
-        Key([mod, "shift"], "s", down_group(pull_window=True)),
-        Key([mod, "shift"], "d", up_group(pull_window=True)),
-        Key([mod, "shift"], "f", right_group(pull_window=True)),
-        Key([mod], "j", lazy.layout.grow_left()),
-        Key([mod], "k", lazy.layout.grow_down()),
-        Key([mod], "l", lazy.layout.grow_up()),
-        Key([mod], "ae", lazy.layout.grow_right()),
-        Key([mod, alt], "j", lazy.layout.shuffle_left()),
-        Key([mod, alt], "k", lazy.layout.shuffle_down()),
-        Key([mod, alt], "l", lazy.layout.shuffle_up()),
-        Key([mod, alt], "ae", lazy.layout.shuffle_right()),
+        Key([mod, "control"], "j", left_group()),
+        Key([mod, "control"], "k", up_group()),
+        Key([mod, "control"], "l", down_group()),
+        Key([mod, "control"], "ae", right_group()),
+        Key([mod, "control", "shift"], "j", left_group(pull_window=True)),
+        Key([mod, "control", "shift"], "k", up_group(pull_window=True)),
+        Key([mod, "control", "shift"], "l", down_group(pull_window=True)),
+        Key([mod, "control", "shift"], "ae", right_group(pull_window=True)),
+        Key([mod], "a", lazy.layout.grow_left()),
+        Key([mod], "s", lazy.layout.grow_up()),
+        Key([mod], "d", lazy.layout.grow_down()),
+        Key([mod], "f", lazy.layout.grow_right()),
+        Key([mod, "shift"], "a", lazy.layout.shuffle_left()),
+        Key([mod, "shift"], "s", lazy.layout.shuffle_up()),
+        Key([mod, "shift"], "d", lazy.layout.shuffle_down()),
+        Key([mod, "shift"], "f", lazy.layout.shuffle_right()),
         Key([mod], "space", lazy.layout.next()),
+        Key([mod, "shift"], "space", lazy.next_layout()),
+        Key([mod, "control"], "space", lazy.window.toggle_fullscreen()),
         ]),
 
 
@@ -519,7 +547,7 @@ widget_list = [
                     # foreground = Colors.text_black,
                     active =  Colors.text_black,
                     # block_highlight_text_color = Colors.text_white,
-                    inactive = Colors.text_white,
+                    inactive = Colors.text_black,
                     hide_unused=True,
                     highlight_method='line',
                     highlight_color = ["#00FFFF00"],
@@ -611,9 +639,10 @@ def get_path_to_random_wallpaper():
     # return path.expanduser('~/Pictures/wallpapers/0056.jpg')
     # return path.expanduser('~/Pictures/wallpapers/0043.jpg')
     import glob
+    from os import path
     files = []
     files.extend(glob.glob(path.expanduser('~/Pictures/variety')+'/**/*.jpg', recursive = True))
-    files.extend(glob.glob(path.expanduser('~/Pictures/wallpaper')+'/**/*.jpg', recursive = True))
+    files.extend(glob.glob(path.expanduser('~/Pictures/desktop_backgrounds')+'/**/*.jpg', recursive = True))
     files.extend(glob.glob('/usr/share/backgrounds/**/*.jpg', recursive = True))
     return random.choice(files)
 
@@ -680,6 +709,7 @@ floating_layout = layout.Floating(
         *layout.Floating.default_float_rules,
         Match(wm_class="confirmreset"),  # gitk
         Match(wm_class="makebranch"),  # gitk
+        Match(wm_class="rviz"),  # gitk
         Match(wm_class="maketag"),  # gitk
         Match(wm_class="ssh-askpass"),  # ssh-askpass
         Match(title="branchdialog"),  # gitk
