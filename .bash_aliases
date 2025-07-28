@@ -11,17 +11,68 @@
 
 #------------------- Stuff to be included ------------------ #
 
+
 export PATH="$PATH:/home/johl/Apps/balena-cli/"
 export PATH="$PATH:/usr/local/go/bin"
 
 source "$HOME/Dropbox/workspaces/jsl_tools/env.bash"
 
-# TRY #############################################################################
+
+# fzf playground
+# ============================
+
+# ctrl+r	Swoosh through history
+# alt+c		Find any dir or file
+# cmd **<tab>	Autocomplete anything
+
+
+items=("aa" "bb" "cc" "dd")
+function fzf-ppp(){ 
+	echo "Your word is: $(printf "%s\n" "${items[@]}" | fzf -q "$1" --prompt "hi> ")"
+}
+
+
+# print -z pushes command to command-line as opposed to eval which evalues directly 
+function fzf-eval(){ 
+	print -z "cat $(ls | fzf)"
+}
+
+
+function fzf-preview(){ 
+	#fzf --preview 'bat --style=numbers --color=always --line-range :500 {}'
+	fzf --preview 'cat {}'
+}
+
+
+function fzf-env-vars() {
+  local out
+  out=$(env | fzf)
+  echo $(echo $out | cut -d= -f2)
+}
+
+
+export PATH="/home/johl/Apps/git-fuzzy/bin:$PATH"
+
+function man2(){
+  export FZF_DEFAULT_COMMAND=echo
+  man ssh | fzf --multi --preview="
+                           echo plus {+};
+                           echo quey {q};
+                           echo file {f};
+                           echo n    {n};
+                           echo n+   {+n};
+                           echo 1.10 {1..10};                           
+	  		   man ssh | less +{n};
+                           "
+}
+
 
 function try(){
   export FZF_DEFAULT_COMMAND=echo
   fzf -q "$*" --preview-window=up:99% --preview="eval {q}"
 }
+
+
 
 # Based on comments here:
 # https://www.reddit.com/r/commandline/comments/174t7y4/play_tui_playground_for_your_favorite_programs/
@@ -33,6 +84,11 @@ function try(){
 # Makes git branch and other not use less the message can be displayed on an entire screen.
 # https://stackoverflow.com/questions/48341920/git-branch-command-behaves-like-less
 export LESS=-FRX
+
+function git_repo_info()
+{
+ (set -x; git remote show origin)
+}
 
 function git_push_force_safer(){
   (set -x;  git push --force-with-lease)
@@ -152,13 +208,33 @@ function v(){
   docker exec -it -w /workspaces/ $container zsh
 }
 
-# Function to open application and close terminal - todo: missing auto-complete features
+# Open application and exit terminal - todo: missing auto-complete features
 function o(){
   set -x
   nohup "$@" &> /dev/null &
-  
   disown 
   exit -1
+}
+
+
+# Something dosnt completely work
+# Run 'complete -p cd' to e.g. see what function cd autocompletes with 
+# complete -o bashdefault -o default -o nospace -F _bash o
+# complete -F _executables o
+# compdef o=bash
+complete -c o
+
+# Open application in thread, keep terminal alive - todo: missing auto-complete features
+function oo(){
+  set -x
+  nohup "$@" &> /dev/null & 
+  disown 
+}
+
+
+# https://stackoverflow.com/questions/3455625/linux-command-to-print-directory-structure-in-the-form-of-a-tree
+function tree_impl(){
+ ls -aR | grep ":$" | perl -pe 's/:$//;s/[^-][^\/]*\//    /g;s/^    (\S)/└── \1/;s/(^    |    (?= ))/│   /g;s/    (\S)/└── \1/'
 }
 
 alias m_cmdline_shorten="(set -x; PS1='\u:\W\$ ')"	## Shortning the commandline path
@@ -211,6 +287,13 @@ function remote_ros() {
 alias m_catkin_config_release='catkin config --cmake-args -DCMAKE_BUILD_TYPE=Release'
 alias m_catkin_config_relwithdebinfo='catkin config --cmake-args -DCMAKE_BUILD_TYPE=RelWithDebInfo'
 
+function nn() {
+  cd 242-mobile-robotics/projects/spot-integration-at-novo/spot-integration-at-novo/src
+  source activate.sh
+  # source .venv/bin/activate
+  export BOSDYN_CLIENT_USERNAME=dti && export BOSDYN_CLIENT_PASSWORD=servicerobots
+}
+
 # ------------ vs-code auto-complete -------------#
 # mir_cd
 # mir_ros_make -DCMAKE_EXPORT_COMPILE_COMMANDS=1
@@ -220,6 +303,7 @@ alias m_catkin_config_relwithdebinfo='catkin config --cmake-args -DCMAKE_BUILD_T
 # Open c_cpp_properties.json and add
 #  "compileCommands":"/usr/local/mir/software/compile_commands.json"
 #
+
 
 
 #colorscript -r

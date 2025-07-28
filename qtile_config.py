@@ -53,20 +53,23 @@ class Commands:
     arandr = 'arandr'
     autorandr = ['autorandr', '--change']
     alsamixer = 'st -e alsamixer'
-    volume_up = 'amixer -q -c 0 sset Master 5dB+'
-    volume_down = 'amixer -q -c 0 sset Master 5dB-'
-    volume_toggle = 'amixer -q set Master toggle'
+    volume_up = 'amixer -q -c 0 sset IEC958 5dB+'
+    volume_down = 'amixer -q -c 0 sset IEC958 5dB-'
+    volume_toggle = 'amixer -q set IEC958 toggle' # ICE958 used to be master
     mic_toggle = 'amixer -q set Dmic0 toggle'
-    screenshot_all = 'scrot'
-    screenshot_window = 'scrot -u'
-    screenshot_selection = 'scrot -s'
+    screenshot_all = ('scrot ' + path.expanduser('~/Pictures/Screenshots/screenshot-%Y-%m-%d-%H-%M-%S.png'))
+    screenshot_window = ('scrot -u ' + path.expanduser('~/Pictures/Screenshots/screenshot-%Y-%m-%d-%H-%M-%S.png'))
+    screenshot_selection = ('scrot -s ' + path.expanduser('~/Pictures/Screenshots/screenshot-%Y-%m-%d-%H-%M-%S.png'))
+    # screenshot_all = 'scrot'
+    # screenshot_window = 'scrot -u'
+    # screenshot_selection = 'scrot -s'
     brightness_up = 'light -A 5'
     brightness_down = 'light -U 5'
     calendar = "gnome-calendar"
     dropbox = "dropbox start".split()
     # picom = ["picom","-b"]
     # picom = "picom -b --corner-radius 5 -f -D 5 -c --inactive-opacity 0.9 --shadow-color #FF0000".split(" ")
-    picom = ("picom --experimental-backends --config " + path.expanduser("~/Dropbox/workspaces/dotfiles/picom.conf")).split()
+    picom = ("picom --config " + path.expanduser("~/Dropbox/workspaces/dotfiles/picom.conf")).split()
     
     # lock = 'i3lock-fancy -p'
     # lock = 'slock'
@@ -83,6 +86,7 @@ class Commands:
     wallpaper_set = "feh --bg-fill".split()
     update = 'gnome-terminal -- bash -c "set x && set eup pipefail && sudo apt-get update && sudo apt-get upgrade"'
 
+
     def get_uptime(self):
         return check_output(['uptime', '-p']).decode("utf-8").replace("\n", "")
 
@@ -90,44 +94,44 @@ class Commands:
 commands = Commands()
 
 class Colors:
-    from catppuccin import Flavour
+    from catppuccin import PALETTE
     
     colors = [
-        Flavour.mocha().rosewater.hex,
-        Flavour.mocha().flamingo.hex,
-        Flavour.mocha().pink.hex,
-        Flavour.mocha().mauve.hex,
-        Flavour.mocha().red.hex,
-        Flavour.mocha().maroon.hex,
-        Flavour.mocha().peach.hex,
-        Flavour.mocha().yellow.hex,
-        Flavour.mocha().green.hex,
-        Flavour.mocha().teal.hex,
-        Flavour.mocha().sky.hex,
-        Flavour.mocha().sapphire.hex,
-        Flavour.mocha().blue.hex,
-        Flavour.mocha().lavender.hex
+        PALETTE.mocha.colors.rosewater.hex,
+        PALETTE.mocha.colors.flamingo.hex,
+        PALETTE.mocha.colors.pink.hex,
+        PALETTE.mocha.colors.mauve.hex,
+        PALETTE.mocha.colors.red.hex,
+        PALETTE.mocha.colors.maroon.hex,
+        PALETTE.mocha.colors.peach.hex,
+        PALETTE.mocha.colors.yellow.hex,
+        PALETTE.mocha.colors.green.hex,
+        PALETTE.mocha.colors.teal.hex,
+        PALETTE.mocha.colors.sky.hex,
+        PALETTE.mocha.colors.sapphire.hex,
+        PALETTE.mocha.colors.blue.hex,
+        PALETTE.mocha.colors.lavender.hex
     ]
 
     colors_grayscale = [
-        Flavour.mocha().subtext1.hex,  # White
-        Flavour.mocha().subtext1.hex,
-        Flavour.mocha().subtext0.hex,
-        Flavour.mocha().overlay2.hex,
-        Flavour.mocha().overlay1.hex,
-        Flavour.mocha().surface2.hex,
-        Flavour.mocha().surface1.hex,
-        Flavour.mocha().surface0.hex,
-        Flavour.mocha().base.hex,
-        Flavour.mocha().mantle.hex,
-        Flavour.mocha().crust.hex,      # Black
+        PALETTE.mocha.colors.subtext1.hex,  # White
+        PALETTE.mocha.colors.subtext1.hex,
+        PALETTE.mocha.colors.subtext0.hex,
+        PALETTE.mocha.colors.overlay2.hex,
+        PALETTE.mocha.colors.overlay1.hex,
+        PALETTE.mocha.colors.surface2.hex,
+        PALETTE.mocha.colors.surface1.hex,
+        PALETTE.mocha.colors.surface0.hex,
+        PALETTE.mocha.colors.base.hex,
+        PALETTE.mocha.colors.mantle.hex,
+        PALETTE.mocha.colors.crust.hex,      # Black
     ]
 
 
-    border_active = Flavour.mocha().lavender.hex
-    border_inactive = Flavour.mocha().overlay0.hex
-    text_white = Flavour.mocha().text.hex
-    text_black = Flavour.mocha().crust.hex
+    border_active = PALETTE.mocha.colors.lavender.hex
+    border_inactive = PALETTE.mocha.colors.overlay0.hex
+    text_white = PALETTE.mocha.colors.text.hex
+    text_black = PALETTE.mocha.colors.crust.hex
 
 
 
@@ -248,11 +252,11 @@ keys.extend([
             ),
             ],
             mode=True,
-            name="resize"
+            name="resize (asdf)"
             ),
         ],
         mode=True,
-        name="move"
+        name="move (asdf)"
         )
 ])
         
@@ -262,44 +266,33 @@ keys.extend([
 # Grid groups
 # =======================
 
-# groups = [Group("1"), Group("2"), Group("3"), Group("4"),
-#           Group("a"), Group("b"), Group("c"), Group("d"),
-#           Group("A"), Group("B"), Group("C"), Group("D")]
+# Vertical layout (normal layout)
+# groups = [Group("1🐉"), Group("2🐉"), Group("3🐉"), Group("4🐉"), # Row 0 
+#           Group("1🦄"), Group("2🦄"), Group("3🦄"), Group("4🦄"), # Row 1
+#           Group("1🐬"), Group("2🐬"), Group("3🐬"), Group("4🐬")] # Row 2
+            # col 0       col 1         col 2         col 3
 
-# groups = [Group("⠾⠿"), Group("⠷⠿"), Group("⠿⠾"), Group("⠿⠷"),
-#           Group("⠽⠿"), Group("⠿⠯"), Group("⠽⠿"), Group("⠿⠯"),
-#           Group("⠻⠿"), Group("⠟⠿"), Group("⠿⠻"), Group("⠿⠟")]
+# Horizontal layout (flip the layout to get the order of the bar more intuitive)
+groups = [Group("🐉"), Group("🐉."), Group("🐉⠆"), # col 0
+          Group("🦄"), Group("🦄."), Group("🦄⠆"), # col 1
+          Group("🐬"), Group("🐬."), Group("🐬⠆"), # col 2
+          Group("🐥"), Group("🐥."), Group("🐥⠆")] # col 3
+          # row 0       row 1         row 2   
 
-# groups = [Group("1⠆"), Group("2⠆"), Group("3⠆"), Group("4⠆"),
-#           Group("5⠅"), Group("6⠅"), Group("7⠅"), Group("8⠅"),
-#           Group("9⠆"), Group("10⠆"), Group("11⠆"), Group("12⠆")]
-
-# groups = [Group("🐬⠆"), Group("🐣⠆"), Group("🐢⠆"), Group("🐘⠆"),
-#           Group("🐬⠅"), Group("🐣⠅"), Group("🐢⠅"), Group("🐘⠅"),
-#           Group("🐬⠆"), Group("🐣⠆"), Group("🐢⠆"), Group("🐘⠆")]
-
-# groups = [Group("1🐬"), Group("2🐬"), Group("3🐬"), Group("4🐬"),
-#           Group("5🐘"), Group("6🐘"), Group("7🐘"), Group("8🐘"),
-#           Group("9🐢"), Group("10🐢"), Group("11🐢"), Group("12🐢")]
-
-groups = [Group("1🐬"), Group("2🐬"), Group("3🐬"), Group("4🐬"),
-          Group("1🐘"), Group("2🐘"), Group("3🐘"), Group("4🐘"),
-          Group("1🐢"), Group("2🐢"), Group("3🐢"), Group("4🐢")]
-
-# 🌿 🍀 🐌 🐣 🐙 🐢 🐋 🐸 🐧 🐬 🐲 🐀 🐘 🐝 🐥
-
-# ⠃   ⠅   ⠆
-# ⠟   ⠻   ⠷   ⠾   ⠯   ⠽   ⠿ 
+# 🌿 🍀 🐌 🐣 🐙 🐢 🐋 🐸 🐧 🐬 🐲 🐀 🐘 🐝 🐥 🐦‍⬛ 🦜 🐉 🐲
+# ⠃   ⠅   ⠆ ⠟   ⠻   ⠷   ⠾   ⠯   ⠽   ⠿ 
 
 class Grid:
     rows = 3
     cols = 4
 
     def to_idx(row, col):
-        return int(row * Grid.cols + col)
+        # return int(row * Grid.cols + col) # Vertical layout
+        return int(col * Grid.rows + row)   # Horizontal layout
 
     def to_cell(idx):
-        return int(idx / Grid.cols), int(idx % Grid.cols)
+        # return int(idx * Grid.rows), int(idx % Grid.rows) # Vertical layout
+        return int(idx % Grid.rows), int(idx / Grid.rows)   # Horizontal layout
 
 
 if len(groups) < Grid.rows * Grid.cols:
@@ -358,6 +351,10 @@ for i in range(1, 9):
 keys.extend([
         # Key([mod, "control"], "left", lazy.screen.prev_group()),
         # Key([mod, "control"], "right", lazy.screen.next_group()),
+        Key([mod], "left", lazy.layout.left()),
+        Key([mod], "up", lazy.layout.up()),
+        Key([mod], "down", lazy.layout.down()),
+        Key([mod], "right", lazy.layout.right()),
         Key([mod, "control"], "left", left_group()),
         Key([mod, "control"], "right", right_group()),
         Key([mod, "control"], "up", up_group()),
@@ -374,18 +371,22 @@ keys.extend([
         ]),
 
 keys.extend([
-        Key([mod, "control"], "j", left_group()),
-        Key([mod, "control"], "k", up_group()),
-        Key([mod, "control"], "l", down_group()),
-        Key([mod, "control"], "ae", right_group()),
-        Key([mod, "control", "shift"], "j", left_group(pull_window=True)),
-        Key([mod, "control", "shift"], "k", up_group(pull_window=True)),
-        Key([mod, "control", "shift"], "l", down_group(pull_window=True)),
-        Key([mod, "control", "shift"], "ae", right_group(pull_window=True)),
-        Key([mod], "a", lazy.layout.grow_left()),
-        Key([mod], "s", lazy.layout.grow_up()),
-        Key([mod], "d", lazy.layout.grow_down()),
-        Key([mod], "f", lazy.layout.grow_right()),
+        Key([mod], "j", left_group()),
+        Key([mod], "k", up_group()),
+        Key([mod], "l", down_group()),
+        Key([mod], "ae", right_group()),
+        Key([mod, "shift"], "j", left_group(pull_window=True)),
+        Key([mod, "shift"], "k", up_group(pull_window=True)),
+        Key([mod, "shift"], "l", down_group(pull_window=True)),
+        Key([mod, "shift"], "ae", right_group(pull_window=True)),
+        Key([mod], "a", lazy.layout.left()),
+        Key([mod], "s", lazy.layout.up()),
+        Key([mod], "d", lazy.layout.down()),
+        Key([mod], "f", lazy.layout.right()),
+        Key([mod, "control"], "a", lazy.layout.grow_left()),
+        Key([mod, "control"], "s", lazy.layout.grow_up()),
+        Key([mod, "control"], "d", lazy.layout.grow_down()),
+        Key([mod, "control"], "f", lazy.layout.grow_right()),
         Key([mod, "shift"], "a", lazy.layout.shuffle_left()),
         Key([mod, "shift"], "s", lazy.layout.shuffle_up()),
         Key([mod, "shift"], "d", lazy.layout.shuffle_down()),
@@ -393,6 +394,7 @@ keys.extend([
         Key([mod], "space", lazy.layout.next()),
         Key([mod, "shift"], "space", lazy.next_layout()),
         Key([mod, "control"], "space", lazy.window.toggle_fullscreen()),
+        Key([mod], "z", lazy.layout.toggle_split()),    # For BSD layout
         ]),
 
 
@@ -414,11 +416,12 @@ keys.extend([
 
 scratchpads = ScratchPad("scratchpad",
         dropdowns = [
-            # Drop down terminal with tmux session
-            DropDown("term", "kitty".split(), # Obs gnome terminal refues to open as floating window
-                opacity = 0.9,
-                y = 0.25,
-                height = 0.5,
+            DropDown("term", ["terminator"], # Obs gnome terminal refues to open as floating window
+            # DropDown("term", ["gnome-terminal", "--window"], # Obs gnome terminal refues to open as floating window
+            # DropDown("term", "gnome-terminal", # Obs gnome terminal refues to open as floating window
+                opacity = 0.5,
+                y = 0.15,
+                height = 0.7,
                 on_focus_lost_hide = True,
                 warp_pointer = False
                 ),
@@ -440,15 +443,33 @@ layouts = [
         border_normal_stack = colors.colors_grayscale[-3],
         # border_focus_stack=[colors.colors_grayscale[0], colors.colors_grayscale[-1]],
         border_width=3, 
-        margin=0
+        margin=5
         ),
     # layout.Max(),
     # Try more layouts by unleashing below layouts.
     # layout.Stack(num_stacks=2),
-    #layout.Bsp(),
+    layout.Bsp(
+        border_focus = colors.border_active,
+        border_normal = colors.border_inactive,
+        border_normal_stack = colors.colors_grayscale[-3],
+        # border_focus_stack=[colors.colors_grayscale[0], colors.colors_grayscale[-1]],
+        border_width=3, 
+        margin=5,
+        fair=False
+
+    ),
     # layout.Matrix(),
     # layout.MonadTall(),
-    # layout.MonadWide(),
+    layout.MonadWide(
+        border_focus = colors.border_active,
+        border_normal = colors.border_inactive,
+        border_normal_stack = colors.colors_grayscale[-3],
+        # border_focus_stack=[colors.colors_grayscale[0], colors.colors_grayscale[-1]],
+        border_width=3, 
+        margin=5,
+        ratio=0.6
+
+    ),
     # layout.RatioTile(),
     # layout.Tile(),
     layout.TreeTab(),
@@ -483,7 +504,8 @@ widget_defaults = dict(
     # font = "BigBlueTermPlus Nerd Font",
     # font="Monoki Nerd Font",
     # font="LiterationSans",
-    font = "sans",
+    # font = "sans",
+    font = "Ubuntu Nerd Font",
     # font = "DroidSansM Nerd Font",
     # font = "M+CodeLatX Nerd Font",
     # font = "M+CodeLat Nerd Font",
@@ -536,7 +558,6 @@ def get_extention_styleing(color=None, color_index_skip=1):
 
 # See https://www.nerdfonts.com/cheat-sheet for icons
 
-
 widget_list = [
                 widget.CurrentLayout(
                     **get_extention_styleing()
@@ -551,11 +572,11 @@ widget_list = [
                     hide_unused=True,
                     highlight_method='line',
                     highlight_color = ["#00FFFF00"],
-                    other_current_screen_border = colors.get_color(1),
-                    other_screen_border = colors.get_color(0),
-                    this_current_screen_border = colors.get_color(1),
+                    this_current_screen_border = colors.get_color(2),
                     this_screen_border = colors.get_color(0),
                     **get_extention_styleing(),
+                    other_current_screen_border = colors.get_color(0),
+                    other_screen_border = colors.get_color(0),
                 ),
                 # spacer(),
                 widget.WindowName(
@@ -577,7 +598,17 @@ widget_list = [
                 spacer(bar.STRETCH),
                 widget.Volume(
                     fmt="  {}",
-                    volume_app=commands.alsamixer,
+                    # 
+                    # amixer -D default -q sset IEC958 toggle
+                    # https://docs.qtile.org/en/latest/manual/ref/widgets.html#volume
+                    # device = 0,
+                    # check_mute_command= "echo test",
+                    # get_volume_command="amixer -D default sget IEC958".split(),
+                    # get_volume_command = "ls",
+                    # check_mute_string = "  Mono: Playback []",
+                    # channel = "IEC958",
+                    cardid = 1,
+                    # volume_app=commands.alsamixer,
                     **get_extention_styleing()
                     ),
                 # spacer(),
@@ -589,7 +620,22 @@ widget_list = [
                     **get_extention_styleing()
                     ),
                 # spacer(),
-                widget.CheckUpdates(
+                widget.Backlight(
+                    backlight_name = "amdgpu_bl1",
+                    fmt="  {}",
+                    change_command = "brightnessctl --device='amdgpu_bl1' s {0}%",
+
+
+                    # brightness_file = "amdgpu_bl1", # see /sys/class/backlight/backlight_name
+                    **get_extention_styleing(),
+                ),
+                widget.Bluetooth(
+                    **get_extention_styleing(),
+                    # Right click to open bluetooth settings
+                    # blueman-manager can be use to spawn a bluetooth manager
+                    # blueman-applet can be used to spawn an icon (upper rigth corner, right clicking give settings)
+                ),
+               widget.CheckUpdates(
                     fmt="󰚰  {}",
                     distro='Ubuntu',
                     colour_have_updates = Colors.text_black,
@@ -601,10 +647,13 @@ widget_list = [
                 # spacer(),
                 widget.Wlan(
                     fmt= "   {}",
-                    interface='wlp9s0',
+                    interface='wlp2s0',
                     format='{essid} {percent:2.0%}',
-                    **get_extention_styleing()
-                    ),
+                    **get_extention_styleing(),
+                    # nmtui
+                    # nm-applet spawn icon that can be used (icon in upper right corner)
+                    # nmcli
+                            ),
                 widget.Clock(
                     format=u"  %A  %Y-%m-%d",
                     mouse_callbacks = {"Button1":lazy.spawn(Commands.calendar)},
@@ -641,9 +690,11 @@ def get_path_to_random_wallpaper():
     import glob
     from os import path
     files = []
-    files.extend(glob.glob(path.expanduser('~/Pictures/variety')+'/**/*.jpg', recursive = True))
-    files.extend(glob.glob(path.expanduser('~/Pictures/desktop_backgrounds')+'/**/*.jpg', recursive = True))
-    files.extend(glob.glob('/usr/share/backgrounds/**/*.jpg', recursive = True))
+    # files.extend(glob.glob(path.expanduser('~/Pictures/variety')+'/**/*.jpg', recursive = True))
+    # files.extend(glob.glob(path.expanduser('~/Pictures/desktop_backgrounds')+'/**/*.jpg', recursive = True))
+    # files.extend(glob.glob(path.expanduser('~/Pictures/wallpapers/**/*.jpg'), recursive = True))
+    files.extend(glob.glob(path.expanduser('~/Pictures/wallpapers/color_bombs/**/*.jpg'), recursive = True))
+    # files.extend(glob.glob('/usr/share/backgrounds/**/*.jpg', recursive = True))
     return random.choice(files)
 
 wallpaper = get_path_to_random_wallpaper()
@@ -657,8 +708,8 @@ screens = [
             size=24,
             background="#00000000",
             border_color="#00000000",
-            border_width=[5, 0, 5, 0],  # Draw top and bottom borders
-            #margin=[5,5,5,5],
+            border_width=[5, 5, 5, 5],  # Draw top and bottom borders
+            # margin=[0,5,5,5],
         ),
         #bottom=bottom,
         # wallpaper=wallpaper,
@@ -677,7 +728,7 @@ screens = [
             size=24, 
             # opacity=0.0,
             background='#00000000',
-            margin=[5,5,5,5]
+            # margin=[5,5,5,5]
 ),
         # wallpaper=wallpaper,
         # wallpaper_mode='stretch',
@@ -689,8 +740,15 @@ screens = [
 mouse = [
     Drag([mod], "Button1", lazy.window.set_position_floating(), start=lazy.window.get_position()),
     Drag([mod], "Button3", lazy.window.set_size_floating(), start=lazy.window.get_size()),
-    Click([mod], "Button2", lazy.window.bring_to_front()),
+    # Click([mod], "Button2", lazy.window.bring_to_front()),
+    Click([mod], "Button2", lazy.window.toggle_floating()),
 ]
+
+# # Floating windows
+# Key([mod], "f",
+#     lazy.window.toggle_floating(),
+#     desc="Toggle floating",
+# ),
 
 dgroups_key_binder = None
 dgroups_app_rules = []  # type: list
@@ -714,6 +772,8 @@ floating_layout = layout.Floating(
         Match(wm_class="ssh-askpass"),  # ssh-askpass
         Match(title="branchdialog"),  # gitk
         Match(title="pinentry"),  # GPG key password entry
+        Match(title="UnityEditor.AddComponent.AddComponentWindow"),
+        Match(title="Color")
     ]
 )
 
@@ -753,7 +813,7 @@ def autostart():
         run(Commands.autorandr)
     # Popen starts detached process
     Popen(Commands.picom) 
-    Popen(Commands.dropbox) 
+    # Popen(Commands.dropbox) 
     # Picom reload autoamtic on changes in picom.conf
     # Picom errors out if picom its already running, no need to 'pkill picom' first
 
