@@ -1,7 +1,7 @@
 #!/bin/bash
 # set -euo pipefail
 
-#------------------- INSTAKK INSTRUCTION ---------------------- #
+#------------------- INSTALL INSTRUCTION ---------------------- #
 #
 # Create symlink by:
 # ln -s ~/Dropbox/workspaces/dotfiles/.bash_aliases "$HOME" 
@@ -12,10 +12,9 @@
 #------------------- Stuff to be included ------------------ #
 
 
-export PATH="$PATH:/home/johl/Apps/balena-cli/"
-export PATH="$PATH:/usr/local/go/bin"
-
-source "$HOME/Dropbox/workspaces/jsl_tools/env.bash"
+# export PATH="$PATH:/home/johl/Apps/balena-cli/"
+# export PATH="$PATH:/usr/local/go/bin"
+# source "$HOME/Dropbox/workspaces/jsl_tools/env.bash"
 
 
 # fzf playground
@@ -260,50 +259,5 @@ alias .....='cd ../../../../'
 
 #4: Start calculator with math support
 alias bc='bc -l'
-
-
-
-
-# ROS1 ############################################################################
-
-function remote_ros() {
-  export ROS_MASTER_URI=http://$1:11311
-  export ROS_HOSTNAME=$(ifconfig wlp3s0 | sed -n '2s/[^:]*:\([^ ]*\).*/\1/p')
-  export ROS_IP=""
-  ssh -t mirex@$1 "export ROS_HOSTNAME=\$(ifconfig wlp2s0 | sed -n '2s/[^:]*:\([^ ]*\).*/\1/p')"
-
-  echo "ROS_MASTER_URI: $ROS_MASTER_URI" # http://192.168.12.20:11311
-  echo "ROS_HOSTNAME:   $ROS_HOSTNAME"   # 192.168.16.22
-  echo "ROS_IP:         $ROS_IP"         # 192.168.16.254
-
-  echo "Restart ros on remote if on mir_robot wify"
-  echo "  use 'roslaunch mirCommon mir_bringup.launch' as ROS_HOSTNAME is overriden by 'service mir_service start')" 
- 
-  # ROS_IP - if you are specifying an IP #address, 
-  # ROS_HOSTNAME - if you are specifying a host name. 
-  # The options are mutually exclusive, ROS_HOSTNAME takes precedence. 
-}
-
-alias m_catkin_config_release='catkin config --cmake-args -DCMAKE_BUILD_TYPE=Release'
-alias m_catkin_config_relwithdebinfo='catkin config --cmake-args -DCMAKE_BUILD_TYPE=RelWithDebInfo'
-
-function nn() {
-  cd 242-mobile-robotics/projects/spot-integration-at-novo/spot-integration-at-novo/src
-  source activate.sh
-  # source .venv/bin/activate
-  export BOSDYN_CLIENT_USERNAME=dti && export BOSDYN_CLIENT_PASSWORD=servicerobots
-}
-
-# ------------ vs-code auto-complete -------------#
-# mir_cd
-# mir_ros_make -DCMAKE_EXPORT_COMPILE_COMMANDS=1
-# find ./robot/ros/build -type f -name 'compile_commands.json' -exec cat {} \; > compile_commands.json
-# sed -i 's/\]\[/,/g' compile_commands.json
-#
-# Open c_cpp_properties.json and add
-#  "compileCommands":"/usr/local/mir/software/compile_commands.json"
-#
-
-
 
 #colorscript -r
