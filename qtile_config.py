@@ -69,7 +69,7 @@ class Commands:
     dropbox = "dropbox start".split()
     # picom = ["picom","-b"]
     # picom = "picom -b --corner-radius 5 -f -D 5 -c --inactive-opacity 0.9 --shadow-color #FF0000".split(" ")
-    picom = ("picom --config " + path.expanduser("~/Dropbox/workspaces/dotfiles/picom.conf")).split()
+    picom = ("picom --config " + path.expanduser("~/workspaces/dotfiles/picom.conf")).split()
     
     # lock = 'i3lock-fancy -p'
     # lock = 'slock'
@@ -142,6 +142,7 @@ class Colors:
         self.color_index_ += increment
         idx = self.color_index_ % len(Colors.colors)
         return Colors.colors[idx] 
+        
 
 colors = Colors()
 
@@ -694,7 +695,7 @@ def get_path_to_random_wallpaper():
     # files.extend(glob.glob(path.expanduser('~/Pictures/desktop_backgrounds')+'/**/*.jpg', recursive = True))
     # files.extend(glob.glob(path.expanduser('~/Pictures/wallpapers/**/*.jpg'), recursive = True))
     files.extend(glob.glob(path.expanduser('~/Pictures/wallpapers/color_bombs/**/*.jpg'), recursive = True))
-    # files.extend(glob.glob('/usr/share/backgrounds/**/*.jpg', recursive = True))
+    files.extend(glob.glob('/usr/share/backgrounds/**/*.jpg', recursive = True))
     return random.choice(files)
 
 wallpaper = get_path_to_random_wallpaper()
