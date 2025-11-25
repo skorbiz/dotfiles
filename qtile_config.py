@@ -87,9 +87,6 @@ class Commands:
     update = 'gnome-terminal -- bash -c "set x && set eup pipefail && sudo apt-get update && sudo apt-get upgrade"'
 
 
-    def get_uptime(self):
-        return check_output(['uptime', '-p']).decode("utf-8").replace("\n", "")
-
 
 commands = Commands()
 
@@ -344,71 +341,105 @@ def down_group(qtile, pull_window=False):
 for i in range(1, 9):
     keys.extend(
         [
-            Key([mod], str(i), lazy.group[groups[i-1].name].toscreen()),
+            Key([mod, "control"], str(i), lazy.group[groups[i-1].name].toscreen()),
             Key([mod, "shift"], str(i), lazy.window.togroup(groups[i-1].name, switch_group=True)),
         ]
     )
 
+
+# Move focus
+# Windows: alt + tab + shift
+# Ubuntu: mod + alt + arrow
+# qtile default: mod + space
+# qtile: mod + wasd and 
+#        alt + tab
+#        mod + space
 keys.extend([
-        # Key([mod, "control"], "left", lazy.screen.prev_group()),
-        # Key([mod, "control"], "right", lazy.screen.next_group()),
-        Key([mod], "left", lazy.layout.left()),
-        Key([mod], "up", lazy.layout.up()),
-        Key([mod], "down", lazy.layout.down()),
-        Key([mod], "right", lazy.layout.right()),
-        Key([mod, "control"], "left", left_group()),
-        Key([mod, "control"], "right", right_group()),
-        Key([mod, "control"], "up", up_group()),
-        Key([mod, "control"], "down", down_group()),
-        # Gnome controls
-        # Key([alt, "control"], "left", left_group()),
-        # Key([alt, "control"], "right", right_group()),
-        # Key([alt, "control"], "up", up_group()),
-        # Key([alt, "control"], "down", down_group()),
-        # Key([alt, "control", "shift"], "left", left_group(pull_window=True)),
-        # Key([alt, "control", "shift"], "right", right_group(pull_window=True)),
-        # Key([alt, "control", "shift"], "up", up_group(pull_window=True)),
-        # Key([alt, "control", "shift"], "down", down_group(pull_window=True)),
+        Key([alt], "tab", lazy.layout.next()),
+        Key([mod], "space", lazy.layout.next()),
+        Key([mod], "a", lazy.layout.left()),
+        Key([mod], "w", lazy.layout.up()),
+        Key([mod], "s", lazy.layout.down()),
+        Key([mod], "d", lazy.layout.right()),
         ]),
 
+
+# Resize windows
+# Windows: mouse
+# Ubuntu: mouse
+# Qtile: mod + ctrl + wasd
 keys.extend([
-        Key([mod], "j", left_group()),
-        Key([mod], "k", up_group()),
-        Key([mod], "l", down_group()),
-        Key([mod], "ae", right_group()),
+        Key([mod, "control"], "a", lazy.layout.grow_left()),
+        Key([mod, "control"], "w", lazy.layout.grow_up()),
+        Key([mod, "control"], "s", lazy.layout.grow_down()),
+        Key([mod, "control"], "d", lazy.layout.grow_right()),
+        ]),
+
+
+# Move/snap windows
+# Windows: mod + arrow
+# Ubuntu: mod + arrow
+# Qtile: mod + shift + wasd
+#        mod + jklæ
+#        mod + arrow
+keys.extend([
+        Key([mod, "shift"], "a", lazy.layout.shuffle_left()),
+        Key([mod, "shift"], "w", lazy.layout.shuffle_up()),
+        Key([mod, "shift"], "s", lazy.layout.shuffle_down()),
+        Key([mod, "shift"], "d", lazy.layout.shuffle_right()),
+        Key([mod], "j", lazy.layout.shuffle_left()),
+        Key([mod], "k", lazy.layout.shuffle_up()),
+        Key([mod], "l", lazy.layout.shuffle_down()), #Conflicts with windows lock in vm
+        Key([mod], "ae", lazy.layout.shuffle_right()),
+        Key([mod], "left", lazy.layout.shuffle_left()),
+        Key([mod], "up", lazy.layout.shuffle_up()),
+        Key([mod], "down", lazy.layout.shuffle_down()),
+        Key([mod], "right", lazy.layout.shuffle_right()),
+        ]),
+
+
+# Switch workspace
+# Windows: mod + ctrl + arrow
+# Ubuntu: ctrl + alt + arrow
+# Qtile: mod + ctrl + arrow
+#        mod + ctrl + jklæ
+keys.extend([
+        Key([mod, "control"], "left", left_group(pull_window=False)),
+        Key([mod, "control"], "up", up_group(pull_window=False)),
+        Key([mod, "control"], "down", down_group(pull_window=False)),
+        Key([mod, "control"], "right", right_group(pull_window=False)),
+        Key([mod, "control"], "j", left_group(pull_window=False)),
+        Key([mod, "control"], "k", up_group(pull_window=False)),
+        Key([mod, "control"], "l", down_group(pull_window=False)),
+        Key([mod, "control"], "ae", right_group(pull_window=False)),
+        ]),
+
+
+# Switch workspace
+# Windows: mod + shift + left/right
+# Ubuntu: mod + shift + left/right
+# Qtile: mod + shift + arrow
+#        mod + shift + jklæ
+keys.extend([
+        Key([mod, "shift"], "left", left_group(pull_window=True)),
+        Key([mod, "shift"], "up", up_group(pull_window=True)),
+        Key([mod, "shift"], "down", down_group(pull_window=True)),
+        Key([mod, "shift"], "right", right_group(pull_window=True)),
         Key([mod, "shift"], "j", left_group(pull_window=True)),
         Key([mod, "shift"], "k", up_group(pull_window=True)),
         Key([mod, "shift"], "l", down_group(pull_window=True)),
         Key([mod, "shift"], "ae", right_group(pull_window=True)),
-        Key([mod], "a", lazy.layout.left()),
-        Key([mod], "s", lazy.layout.up()),
-        Key([mod], "d", lazy.layout.down()),
-        Key([mod], "f", lazy.layout.right()),
-        Key([mod, "control"], "a", lazy.layout.grow_left()),
-        Key([mod, "control"], "s", lazy.layout.grow_up()),
-        Key([mod, "control"], "d", lazy.layout.grow_down()),
-        Key([mod, "control"], "f", lazy.layout.grow_right()),
-        Key([mod, "shift"], "a", lazy.layout.shuffle_left()),
-        Key([mod, "shift"], "s", lazy.layout.shuffle_up()),
-        Key([mod, "shift"], "d", lazy.layout.shuffle_down()),
-        Key([mod, "shift"], "f", lazy.layout.shuffle_right()),
-        Key([mod], "space", lazy.layout.next()),
+        ]),
+
+
+# Other
+keys.extend([
         Key([mod, "shift"], "space", lazy.next_layout()),
         Key([mod, "control"], "space", lazy.window.toggle_fullscreen()),
         Key([mod], "z", lazy.layout.toggle_split()),    # For BSD layout
         ]),
 
 
-
-# Default qtile
-# keys.extend([
-#     # Switch between windows   
-#     Key([mod], "h", lazy.layout.left(), desc="Move focus to left"),
-#     Key([mod], "l", lazy.layout.right(), desc="Move focus to right"),
-#     Key([mod], "j", lazy.layout.down(), desc="Move focus down"),
-#     Key([mod], "k", lazy.layout.up(), desc="Move focus up"),
-#     Key([mod], "space", lazy.layout.next(), desc="Move window focus to other window"),
-#     ])
 
 
 # Scratchpads
@@ -506,13 +537,14 @@ widget_defaults = dict(
     # font="Monoki Nerd Font",
     # font="LiterationSans",
     # font = "sans",
-    font = "Ubuntu Nerd Font",
+    font = "Ubuntu Font",
+    # font = "Ubuntu Nerd Font",
     # font = "DroidSansM Nerd Font",
     # font = "M+CodeLatX Nerd Font",
     # font = "M+CodeLat Nerd Font",
     # font = "Mononoki Nerd Font",
     # font = "M+1 Nerd Font",
-    fontsize=12,
+    fontsize=16,
     padding = 10,
     # background=colors.get_color(1),
     # foreground=Colors.text_black,
@@ -621,15 +653,15 @@ widget_list = [
                     **get_extention_styleing()
                     ),
                 # spacer(),
-                widget.Backlight(
-                    backlight_name = "amdgpu_bl1",
-                    fmt="  {}",
-                    change_command = "brightnessctl --device='amdgpu_bl1' s {0}%",
+                # widget.Backlight(
+                #     backlight_name = "amdgpu_bl1",
+                #     fmt="  {}",
+                #     change_command = "brightnessctl --device='amdgpu_bl1' s {0}%",
 
 
-                    # brightness_file = "amdgpu_bl1", # see /sys/class/backlight/backlight_name
-                    **get_extention_styleing(),
-                ),
+                #     # brightness_file = "amdgpu_bl1", # see /sys/class/backlight/backlight_name
+                #     **get_extention_styleing(),
+                # ),
                 widget.Bluetooth(
                     **get_extention_styleing(),
                     # Right click to open bluetooth settings
@@ -696,6 +728,7 @@ def get_path_to_random_wallpaper():
     # files.extend(glob.glob(path.expanduser('~/Pictures/wallpapers/**/*.jpg'), recursive = True))
     files.extend(glob.glob(path.expanduser('~/Pictures/wallpapers/color_bombs/**/*.jpg'), recursive = True))
     files.extend(glob.glob('/usr/share/backgrounds/**/*.jpg', recursive = True))
+    files.extend(glob.glob('/usr/share/backgrounds/**/*.png', recursive = True))
     return random.choice(files)
 
 wallpaper = get_path_to_random_wallpaper()
@@ -706,7 +739,7 @@ screens = [
     Screen(
         top=bar.Bar(
             widgets = widget_list,
-            size=24,
+            size=32,
             background="#00000000",
             border_color="#00000000",
             border_width=[5, 5, 5, 5],  # Draw top and bottom borders
