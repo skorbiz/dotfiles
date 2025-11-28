@@ -358,9 +358,9 @@ keys.extend([
         Key([alt], "tab", lazy.layout.next()),
         Key([mod], "space", lazy.layout.next()),
         Key([mod], "a", lazy.layout.left()),
-        Key([mod], "w", lazy.layout.up()),
         Key([mod], "s", lazy.layout.down()),
-        Key([mod], "d", lazy.layout.right()),
+        Key([mod], "d", lazy.layout.up()),
+        Key([mod], "f", lazy.layout.right()),
         ]),
 
 
@@ -370,9 +370,9 @@ keys.extend([
 # Qtile: mod + ctrl + wasd
 keys.extend([
         Key([mod, "control"], "a", lazy.layout.grow_left()),
-        Key([mod, "control"], "w", lazy.layout.grow_up()),
         Key([mod, "control"], "s", lazy.layout.grow_down()),
-        Key([mod, "control"], "d", lazy.layout.grow_right()),
+        Key([mod, "control"], "d", lazy.layout.grow_up()),
+        Key([mod, "control"], "f", lazy.layout.grow_right()),
         ]),
 
 
@@ -384,9 +384,9 @@ keys.extend([
 #        mod + arrow
 keys.extend([
         Key([mod, "shift"], "a", lazy.layout.shuffle_left()),
-        Key([mod, "shift"], "w", lazy.layout.shuffle_up()),
         Key([mod, "shift"], "s", lazy.layout.shuffle_down()),
-        Key([mod, "shift"], "d", lazy.layout.shuffle_right()),
+        Key([mod, "shift"], "d", lazy.layout.shuffle_up()),
+        Key([mod, "shift"], "f", lazy.layout.shuffle_right()),
         Key([mod], "j", lazy.layout.shuffle_left()),
         Key([mod], "k", lazy.layout.shuffle_down()), #Conflicts with windows lock in vm
         Key([mod], "l", lazy.layout.shuffle_up()),
