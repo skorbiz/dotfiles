@@ -388,8 +388,8 @@ keys.extend([
         Key([mod, "shift"], "s", lazy.layout.shuffle_down()),
         Key([mod, "shift"], "d", lazy.layout.shuffle_right()),
         Key([mod], "j", lazy.layout.shuffle_left()),
-        Key([mod], "k", lazy.layout.shuffle_up()),
-        Key([mod], "l", lazy.layout.shuffle_down()), #Conflicts with windows lock in vm
+        Key([mod], "k", lazy.layout.shuffle_down()), #Conflicts with windows lock in vm
+        Key([mod], "l", lazy.layout.shuffle_up()),
         Key([mod], "ae", lazy.layout.shuffle_right()),
         Key([mod], "left", lazy.layout.shuffle_left()),
         Key([mod], "up", lazy.layout.shuffle_up()),
@@ -409,8 +409,8 @@ keys.extend([
         Key([mod, "control"], "down", down_group(pull_window=False)),
         Key([mod, "control"], "right", right_group(pull_window=False)),
         Key([mod, "control"], "j", left_group(pull_window=False)),
-        Key([mod, "control"], "k", up_group(pull_window=False)),
-        Key([mod, "control"], "l", down_group(pull_window=False)),
+        Key([mod, "control"], "k", down_group(pull_window=False)),
+        Key([mod, "control"], "l", up_group(pull_window=False)),
         Key([mod, "control"], "ae", right_group(pull_window=False)),
         ]),
 
@@ -426,8 +426,8 @@ keys.extend([
         Key([mod, "shift"], "down", down_group(pull_window=True)),
         Key([mod, "shift"], "right", right_group(pull_window=True)),
         Key([mod, "shift"], "j", left_group(pull_window=True)),
-        Key([mod, "shift"], "k", up_group(pull_window=True)),
-        Key([mod, "shift"], "l", down_group(pull_window=True)),
+        Key([mod, "shift"], "k", down_group(pull_window=True)),
+        Key([mod, "shift"], "l", up_group(pull_window=True)),
         Key([mod, "shift"], "ae", right_group(pull_window=True)),
         ]),
 
@@ -475,7 +475,7 @@ layouts = [
         border_normal_stack = colors.colors_grayscale[-3],
         # border_focus_stack=[colors.colors_grayscale[0], colors.colors_grayscale[-1]],
         border_width=3, 
-        margin=5
+        # margin=5
         ),
     # layout.Max(),
     # Try more layouts by unleashing below layouts.
@@ -486,7 +486,7 @@ layouts = [
         border_normal_stack = colors.colors_grayscale[-3],
         # border_focus_stack=[colors.colors_grayscale[0], colors.colors_grayscale[-1]],
         border_width=3, 
-        margin=5,
+        # margin=5,
         fair=False
 
     ),
@@ -498,7 +498,7 @@ layouts = [
         border_normal_stack = colors.colors_grayscale[-3],
         # border_focus_stack=[colors.colors_grayscale[0], colors.colors_grayscale[-1]],
         border_width=3, 
-        margin=5,
+        # margin=5,
         ratio=0.6
 
     ),
@@ -544,7 +544,7 @@ widget_defaults = dict(
     # font = "M+CodeLat Nerd Font",
     # font = "Mononoki Nerd Font",
     # font = "M+1 Nerd Font",
-    fontsize=16,
+    fontsize=12,
     padding = 10,
     # background=colors.get_color(1),
     # foreground=Colors.text_black,
@@ -739,10 +739,11 @@ screens = [
     Screen(
         top=bar.Bar(
             widgets = widget_list,
-            size=32,
+            size=24,
             background="#00000000",
             border_color="#00000000",
-            border_width=[5, 5, 5, 5],  # Draw top and bottom borders
+            # border_width=[5, 5, 5, 5],  # Draw top and bottom borders
+            border_width=[0, 0, 0, 0],  # Draw top and bottom borders
             # margin=[0,5,5,5],
         ),
         #bottom=bottom,
