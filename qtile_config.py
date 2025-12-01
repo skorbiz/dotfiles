@@ -57,6 +57,7 @@ class Commands:
     volume_down = 'amixer -q -c 0 sset IEC958 5dB-'
     volume_toggle = 'amixer -q set IEC958 toggle' # ICE958 used to be master
     mic_toggle = 'amixer -q set Dmic0 toggle'
+    # Todo: Ensure the screenshots dir exists, otherwise make it.
     screenshot_all = ('scrot ' + path.expanduser('~/Pictures/Screenshots/screenshot-%Y-%m-%d-%H-%M-%S.png'))
     screenshot_window = ('scrot -u ' + path.expanduser('~/Pictures/Screenshots/screenshot-%Y-%m-%d-%H-%M-%S.png'))
     screenshot_selection = ('scrot -s ' + path.expanduser('~/Pictures/Screenshots/screenshot-%Y-%m-%d-%H-%M-%S.png'))
