@@ -481,26 +481,38 @@ layouts = [
     # layout.Max(),
     # Try more layouts by unleashing below layouts.
     # layout.Stack(num_stacks=2),
-    layout.Bsp(
-        border_focus = colors.border_active,
-        border_normal = colors.border_inactive,
-        border_normal_stack = colors.colors_grayscale[-3],
-        # border_focus_stack=[colors.colors_grayscale[0], colors.colors_grayscale[-1]],
-        border_width=3, 
-        # margin=5,
-        fair=False
+    # layout.Bsp(
+    #     border_focus = colors.border_active,
+    #     border_normal = colors.border_inactive,
+    #     border_normal_stack = colors.colors_grayscale[-3],
+    #     # border_focus_stack=[colors.colors_grayscale[0], colors.colors_grayscale[-1]],
+    #     border_width=3, 
+    #     # margin=5,
+    #     fair=False
 
-    ),
+    # ),
     # layout.Matrix(),
     # layout.MonadTall(),
-    layout.MonadWide(
+    # layout.MonadWide(
+    #     border_focus = colors.border_active,
+    #     border_normal = colors.border_inactive,
+    #     border_normal_stack = colors.colors_grayscale[-3],
+    #     # border_focus_stack=[colors.colors_grayscale[0], colors.colors_grayscale[-1]],
+    #     border_width=3, 
+    #     # margin=5,
+    #     ratio=0.6
+
+    # ),
+    layout.MonadThreeCol(
         border_focus = colors.border_active,
         border_normal = colors.border_inactive,
         border_normal_stack = colors.colors_grayscale[-3],
         # border_focus_stack=[colors.colors_grayscale[0], colors.colors_grayscale[-1]],
         border_width=3, 
         # margin=5,
-        ratio=0.6
+        main_centered=True,
+        ratio=0.6,
+        new_client_position="bottom"
 
     ),
     # layout.RatioTile(),
