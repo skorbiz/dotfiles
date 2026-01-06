@@ -204,7 +204,7 @@ function v(){
   container=$(docker ps | grep vsc- | grep -oE "[^ ]+$")
   #set container (docker container ls | grep -m 1 'vsc' | cut -d " " -f 1)
   echo "container: " $container
-  docker exec -it -w /workspaces/ $container zsh
+  docker exec -it -w /workspaces/ --user dev $container zsh
 }
 
 # Open application and exit terminal - todo: missing auto-complete features
