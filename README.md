@@ -23,7 +23,6 @@ Then restart your shell (or log out and back in).
 ### VS Code Dev Containers
 When using the VS Code Dev Containers extension, set this repo as your dotfiles repository. VS Code will clone/update it automatically, and your setup will re-run when you reload/rebuild the container.
 
-
 In VS Code settings, set:
 
 ```json
@@ -34,6 +33,23 @@ In VS Code settings, set:
 ```
 
 ![vs-code settings](docs/vscode.png)
+
+#### Devcontainer Sudo Configuration
+
+The installation scripts require sudo access to install zsh and related packages. For devcontainers, add this to your Dockerfile to allow the dev user to run apt without a password:
+
+```dockerfile
+# Allow dev user to run apt/apt-get without password for dotfiles installation
+RUN echo 'dev ALL=(ALL) NOPASSWD: /usr/bin/apt, /usr/bin/apt-get' >> /etc/sudoers
+
+# Or, for full passwordless sudo for a less secure but more flexible setup:
+# RUN echo 'dev ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+
+```
+
+If sudo is not available, the installation will continue with pre-installed packages.
+
+#### Credits
 
 The vs-code integration is inspired by: [kaspertofte/dotfiles](https://github.com/kaspertofte/dotfiles/tree/main)
 
@@ -49,6 +65,9 @@ The vs-code integration is inspired by: [kaspertofte/dotfiles](https://github.co
 
 ### Bash
 - Custom aliases in `.bash_aliases`
+
+### VS Code
+Automatic extension installation for devcontainers and VS Code Remote environments. Extensions are managed in `vscode/extensions.txt` and installed automatically during dotfiles setup. See [vscode/README.md](vscode/README.md) for details.
 
 ### Qtile
 Window manager configuration (for full Ubuntu installations)

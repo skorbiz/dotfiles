@@ -42,7 +42,11 @@ if command -v zsh >/dev/null 2>&1; then
     echo -e "${CINFO}Zsh already installed, skipping installation${CRESET}"
 else
     echo -e "${CINFO}Installing zsh...${CRESET}"
-    bash "$SCRIPT_DIR/zsh/install-zsh.sh"
+    if bash "$SCRIPT_DIR/zsh/install-zsh.sh"; then
+        echo -e "${CGOOD}Zsh installation successful${CRESET}"
+    else
+        echo -e "${CINFO}Zsh installation failed or skipped. Continuing with bash...${CRESET}"
+    fi
 fi
 
 # Install symlinks
@@ -54,6 +58,18 @@ ln -sf "$SCRIPT_DIR/zsh/.zshrc" ~/.zshrc
 ln -sf "$SCRIPT_DIR/zsh/.p10k.zsh" ~/.p10k.zsh
 
 echo -e "${CGOOD}Symlinks created successfully${CRESET}"
+
+# Install VS Code extensions (if in VS Code context)
+# ============================
+if [ -f "$SCRIPT_DIR/vscode/install-extensions.sh" ]; then
+    echo ""
+    echo -e "${CINFO}Checking for VS Code CLI...${CRESET}"
+    if bash "$SCRIPT_DIR/vscode/install-extensions.sh" 2>&1; then
+        echo -e "${CGOOD}VS Code extensions processed${CRESET}"
+    else
+        echo -e "${CINFO}VS Code extension installation skipped (not in VS Code context)${CRESET}"
+    fi
+fi
 
 echo ""
 echo -e "${CGOOD}========================================${CRESET}"

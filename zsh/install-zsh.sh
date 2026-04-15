@@ -1,5 +1,6 @@
 #!/bin/bash
 # Install zsh, oh-my-zsh, and plugins
+# Note: Requires sudo access or packages to be pre-installed
 set -euo pipefail
 
 if command -v shellcheck >/dev/null 2>&1; then
@@ -8,8 +9,22 @@ fi
 
 # Install zsh
 echo "Installing zsh, wget, git..."
-sudo apt-get update
-sudo apt-get install -y --no-install-recommends zsh wget git curl
+if ! sudo -n apt-get update 2>/dev/null; then
+  echo "Warning: Cannot use sudo. Assuming packages are already installed."
+  echo "If zsh is not installed, please install it manually or configure sudo access."
+else
+  sudo apt-get update
+  sudo apt-get install -y --no-install-recommends zsh wget git curl || {
+    echo "Warning: Package installation failed. Continuing with existing packages..."
+  }
+fi
+
+# Check if zsh is available
+if ! command -v zsh >/dev/null 2>&1; then
+  echo "Error: zsh is not installed and could not be installed automatically."
+  echo "Please install zsh manually: sudo apt-get install zsh"
+  exit 1
+fi
 
 # Install oh-my-zsh
 if [ ! -d "$HOME/.oh-my-zsh" ]; then

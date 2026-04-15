@@ -151,7 +151,7 @@ function git_stash_difftool() {
 # DOCKER UTILITIES
 # ============================================================================
 
-# Enter VS Code devcontainer
+# Enter VS Code devcontainer (tries zsh, falls back to bash)
 function v() {
   local container=$(docker ps | grep vsc- | grep -oE "[^ ]+$")
   if [ -z "$container" ]; then
@@ -159,7 +159,12 @@ function v() {
     return 1
   fi
   echo "Connecting to container: $container"
-  docker exec -it -w /workspaces/ --user dev "$container" bash
+  # Try zsh first, fallback to bash if not available
+  if docker exec -it -w /workspaces/ --user dev "$container" command -v zsh >/dev/null 2>&1; then
+    docker exec -it -w /workspaces/ --user dev "$container" zsh
+  else
+    docker exec -it -w /workspaces/ --user dev "$container" bash
+  fi
 }
 
 # ============================================================================  

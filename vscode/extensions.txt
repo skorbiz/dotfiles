@@ -1,0 +1,9 @@
+# VS Code Extensions
+# One extension ID per line, comments allowed
+
+# Git & GitHub
+github.vscode-pull-request-github
+mk12.better-git-line-blame
+
+# GitHub Copilot
+GitHub.copilot-chat
