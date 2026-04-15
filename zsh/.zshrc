@@ -1,4 +1,4 @@
-colorscript -r
+command -v colorscript >/dev/null 2>&1 && colorscript -r
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
@@ -9,11 +9,11 @@ fi
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
 
-# Path to your Oh My Zsh installation.
+# Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
 # Set name of the theme to load --- if set to "random", it will
-# load a random theme each time Oh My Zsh is loaded, in which case,
+# load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
 # ZSH_THEME="robbyrussell"
@@ -79,8 +79,7 @@ ENABLE_CORRECTION="true"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-# plugins=(git)
-plugins=(git zsh-autosuggestions zsh-syntax-highlighting)
+plugins=(git zsh-autosuggestions zsh-syntax-highlighting z)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -119,12 +118,27 @@ alias ohmyzsh="mate ~/.oh-my-zsh"
 # Bash aliases
 source "$HOME/.bash_aliases"
 
+# Bind keys so that arrow up only searches local history
+bindkey "${key[Up]}" up-line-or-local-history
+bindkey "${key[Down]}" down-line-or-local-history
+
+up-line-or-local-history() {
+    zle set-local-history 1
+    zle up-line-or-history
+    zle set-local-history 0
+}
+zle -N up-line-or-local-history
+down-line-or-local-history() {
+    zle set-local-history 1
+    zle down-line-or-history
+    zle set-local-history 0
+}
+zle -N down-line-or-local-history
+
 # Enable stacking autocompletion for docker plugin
 zstyle ':completion:*:*:docker:*' option-stacking yes
 zstyle ':completion:*:*:docker-*:*' option-stacking yes
 
 # Automatically added by install fzt
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-
-#source /home/johl/242-mobile-robotics/tooling/dti_tools/env.bash # DTI_TOOL_AUTOGEN
 

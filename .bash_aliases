@@ -1,263 +1,230 @@
 #!/bin/bash
-# set -euo pipefail
 
-#------------------- INSTALL INSTRUCTION ---------------------- #
-#
-# Create symlink by:
-# ln -s ~/Dropbox/workspaces/dotfiles/.bash_aliases "$HOME" 
-# echo "source "$HOME/.bash_aliases" > .zshrc 
-#
+# ============================================================================
+# BASH/ZSH ALIASES AND FUNCTIONS
+# ============================================================================
+# Custom aliases and functions for both bash and zsh
+# Installed automatically by install.sh
+# ============================================================================
 
+# ============================================================================
+# ENVIRONMENT CONFIGURATION
+# ============================================================================
 
-#------------------- Stuff to be included ------------------ #
+# Makes git branch and other commands not use less when output fits on screen
+# https://stackoverflow.com/questions/48341920/git-branch-command-behaves-like-less
+export LESS=-FRX
 
+# Add custom paths to PATH if they exist
+[[ -d "$HOME/.local/bin" ]] && export PATH="$HOME/.local/bin:$PATH"
 
-# export PATH="$PATH:/home/johl/Apps/balena-cli/"
-# export PATH="$PATH:/usr/local/go/bin"
-# source "$HOME/Dropbox/workspaces/jsl_tools/env.bash"
+# ============================================================================
+# FZF UTILITIES
+# ============================================================================
+# Keybindings: ctrl+r (history), alt+c (cd), cmd **<tab> (autocomplete)
 
-
-# fzf playground
-# ============================
-
-# ctrl+r	Swoosh through history
-# alt+c		Find any dir or file
-# cmd **<tab>	Autocomplete anything
-
-
-items=("aa" "bb" "cc" "dd")
-function fzf-ppp(){ 
-	echo "Your word is: $(printf "%s\n" "${items[@]}" | fzf -q "$1" --prompt "hi> ")"
-}
-
-
-# print -z pushes command to command-line as opposed to eval which evalues directly 
-function fzf-eval(){ 
-	print -z "cat $(ls | fzf)"
-}
-
-
-function fzf-preview(){ 
-	#fzf --preview 'bat --style=numbers --color=always --line-range :500 {}'
-	fzf --preview 'cat {}'
-}
-
-
-function fzf-env-vars() {
-  local out
-  out=$(env | fzf)
-  echo $(echo $out | cut -d= -f2)
-}
-
-
-export PATH="/home/johl/Apps/git-fuzzy/bin:$PATH"
-
-function man2(){
-  export FZF_DEFAULT_COMMAND=echo
-  man ssh | fzf --multi --preview="
-                           echo plus {+};
-                           echo quey {q};
-                           echo file {f};
-                           echo n    {n};
-                           echo n+   {+n};
-                           echo 1.10 {1..10};                           
-	  		   man ssh | less +{n};
-                           "
-}
-
-
-function try(){
+# Interactive command playground - type and see results in real-time
+# Usage: try cat ~/.bashrc | grep HIST <Enter>
+# Based on: https://www.reddit.com/r/commandline/comments/174t7y4/
+function try() {
   export FZF_DEFAULT_COMMAND=echo
   fzf -q "$*" --preview-window=up:99% --preview="eval {q}"
 }
 
+# Fuzzy search environment variables
+function fzf-env-vars() {
+  local out
+  out=$(env | fzf)
+  echo "${out#*=}"
+}
+# ============================================================================
+# GIT FUNCTIONS
+# ============================================================================
+# Convenient git shortcuts and pretty log formats
 
-
-# Based on comments here:
-# https://www.reddit.com/r/commandline/comments/174t7y4/play_tui_playground_for_your_favorite_programs/
-# Useage example: try cat ~/.bashrc | grep HIST <Enter>
-# Type the search quiry and see how it changes in realtime  
-
-# GIT #############################################################################
-
-# Makes git branch and other not use less the message can be displayed on an entire screen.
-# https://stackoverflow.com/questions/48341920/git-branch-command-behaves-like-less
-export LESS=-FRX
-
-function git_repo_info()
-{
- (set -x; git remote show origin)
+# Show remote repository information
+function git_repo_info() {
+  git remote show origin
 }
 
-function git_push_force_safer(){
-  (set -x;  git push --force-with-lease)
+# Safer force push (checks remote hasn't changed)
+function git_push_force_safer() {
+  git push --force-with-lease
 }
 
-function git_get_branch_name(){
-  (set -x; git rev-parse --abbrev-ref HEAD)
+# Get current branch name
+function git_get_branch_name() {
+  git rev-parse --abbrev-ref HEAD
 }
 
-function git_log_folder(){
-  (set -x; git log -- .)
+# Log commits in current directory
+function git_log_folder() {
+  git log -- .
 }
 
-# %h  ref
-# %cr time
-# %s  msg
-# %an author
-# %d  merge
-
-function git_log_short(){
-  (set -x; git log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=short)
+# Compact log with dates
+function git_log_short() {
+  git log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=short
 }
 
-function git_log_stat(){
-  (set -x; git log --numstat --oneline)
+# Log with file statistics
+function git_log_stat() {
+  git log --numstat --oneline
 }
 
-function git_log_graph(){
-  (set -x; git log --graph --abbrev-commit --decorate \
-                   --pretty=format:'%C(bold blue)%h %C(reset)- %C(bold green)%cr %C(reset)%C(white)%s %C(reset)%C(white dim)%an %C(reset)%C(bold yellow)%d %C(reset)' -50)
+# Pretty graph log (last 50 commits)
+function git_log_graph() {
+  git log --graph --abbrev-commit --decorate \
+    --pretty=format:'%C(bold blue)%h %C(reset)- %C(bold green)%cr %C(reset)%C(white)%s %C(reset)%C(white dim)%an %C(reset)%C(bold yellow)%d %C(reset)' -50
 }
 
-function git_log_graph_first_parent(){
-  (set -x; git log --graph --abbrev-commit --decorate --first-parent \
-                   --pretty=format:'%C(bold blue)%h %C(reset)- %C(bold green)%cr %C(reset)%C(white)%s %C(reset)%C(white dim)%an %C(reset)%C(bold yellow)%d %C(reset)' -25)
+# Graph log showing only first parent (cleaner for merge-heavy repos)
+function git_log_graph_first_parent() {
+  git log --graph --abbrev-commit --decorate --first-parent \
+    --pretty=format:'%C(bold blue)%h %C(reset)- %C(bold green)%cr %C(reset)%C(white)%s %C(reset)%C(white dim)%an %C(reset)%C(bold yellow)%d %C(reset)' -25
 }
 
-function git_log_graph_standart_color(){
-  (set -x; git log --graph --oneline --decorate -30)
+# Simple colored graph
+function git_log_graph_standard() {
+  git log --graph --oneline --decorate -30
 }
 
-function git_previous_comit(){
-  (set -x; git log -p -1)
+# Show last commit with changes
+function git_previous_commit() {
+  git log -p -1
 }
 
-function git_compare(){
-  branch=$(git rev-parse --abbrev-ref HEAD)
-  (set -x; git log $1..$branch)
+# Compare branches: commits
+function git_compare() {
+  local branch=$(git rev-parse --abbrev-ref HEAD)
+  git log "$1..$branch"
 }
 
-function git_compare_log(){
-  branch=$(git rev-parse --abbrev-ref HEAD)
-  (set -x; git log -p $1..$branch)
+# Compare branches: commits with diffs
+function git_compare_log() {
+  local branch=$(git rev-parse --abbrev-ref HEAD)
+  git log -p "$1..$branch"
 }
 
-function git_compare_diff(){
-  branch=$(git rev-parse --abbrev-ref HEAD)
-  (set -x; git diff $1..$branch)
+# Compare branches: unified diff
+function git_compare_diff() {
+  local branch=$(git rev-parse --abbrev-ref HEAD)
+  git diff "$1..$branch"
 }
 
-function git_diff(){
-  branch=$(git rev-parse --abbrev-ref HEAD)
-  (set -x; git diff $1..$branch)
+# Diff between two branches
+function git_diff() {
+  local branch=$(git rev-parse --abbrev-ref HEAD)
+  git diff "$1..$branch"
 }
 
-function git_diff_stat(){
-  branch=$(git rev-parse --abbrev-ref HEAD)
-  (set -x; git diff --stat $1..$branch)
+# Diff statistics between branches
+function git_diff_stat() {
+  local branch=$(git rev-parse --abbrev-ref HEAD)
+  git diff --stat "$1..$branch"
 }
 
-function git_diff_file(){
-  branch=$(git rev-parse --abbrev-ref HEAD)
-  (set -x; git diff $1..$branch -- $2)
+# Diff specific file between branches
+# Usage: git_diff_file <branch> <file_path>
+function git_diff_file() {
+  local branch=$(git rev-parse --abbrev-ref HEAD)
+  git diff "$1..$branch" -- "$2"
 }
 
-function git_difftool(){
-  (set -x; git difftool -d $1)
+# Open difftool for visual comparison
+function git_difftool() {
+  git difftool -d "$1"
 }
 
-function git_stash_diff(){
-  (set -x; git stash show -p stash@{$1})
+# Show diff for specific stash
+# Usage: git_stash_diff 0
+function git_stash_diff() {
+  git stash show -p "stash@{${1:-0}}"
 }
 
-function git_stash_difftool(){
-  (set -x; git difftool -d stash)
+# Open difftool for latest stash
+function git_stash_difftool() {
+  git difftool -d stash
 }
 
-function git_local_ignore(){
-  (set -x; gedit ~/mir/.git/info/exclude)
+# ============================================================================
+# DOCKER UTILITIES
+# ============================================================================
+
+# Enter VS Code devcontainer
+function v() {
+  local container=$(docker ps | grep vsc- | grep -oE "[^ ]+$")
+  if [ -z "$container" ]; then
+    echo "No VS Code devcontainer found"
+    return 1
+  fi
+  echo "Connecting to container: $container"
+  docker exec -it -w /workspaces/ --user dev "$container" bash
 }
 
+# ============================================================================  
+# APPLICATION LAUNCHERS
+# ============================================================================
 
-
-# OTHER #############################################################################
-
-
-function m_jupyter(){
-  pushd .
-  cd ~/Dropbox/Workspaces/Jupyter
-  jupyter-notebook
-  popd
-}
-
-
-function q(){
-  python3 "Dropbox/workspaces/python/tifingersystem.py"
-}
-
-
-# CONVINIENCE ###########################################################################
-alias c='clear'
-
-function v(){
-  container=$(docker ps | grep vsc- | grep -oE "[^ ]+$")
-  #set container (docker container ls | grep -m 1 'vsc' | cut -d " " -f 1)
-  echo "container: " $container
-  docker exec -it -w /workspaces/ --user dev $container zsh
-}
-
-# Open application and exit terminal - todo: missing auto-complete features
-function o(){
-  set -x
+# Open application and exit terminal
+function o() {
   nohup "$@" &> /dev/null &
   disown 
-  exit -1
+  exit 0
 }
 
-
-# Something dosnt completely work
-# Run 'complete -p cd' to e.g. see what function cd autocompletes with 
-# complete -o bashdefault -o default -o nospace -F _bash o
-# complete -F _executables o
-# compdef o=bash
-complete -c o
-
-# Open application in thread, keep terminal alive - todo: missing auto-complete features
-function oo(){
-  set -x
+# Open application in background, keep terminal alive
+function oo() {
   nohup "$@" &> /dev/null & 
   disown 
 }
 
+# Autocomplete with command names for both functions
+if [[ -n "$BASH_VERSION" ]]; then
+  complete -c o
+  complete -c oo
+elif [[ -n "$ZSH_VERSION" ]]; then
+  compdef _command o
+  compdef _command oo
+fi
 
-# https://stackoverflow.com/questions/3455625/linux-command-to-print-directory-structure-in-the-form-of-a-tree
-function tree_impl(){
- ls -aR | grep ":$" | perl -pe 's/:$//;s/[^-][^\/]*\//    /g;s/^    (\S)/└── \1/;s/(^    |    (?= ))/│   /g;s/    (\S)/└── \1/'
-}
+# ============================================================================
+# FILE SYSTEM NAVIGATION
+# ============================================================================
 
-alias m_cmdline_shorten="(set -x; PS1='\u:\W\$ ')"	## Shortning the commandline path
-alias m_cmdline_trim="(set -x; PROMPT_DIRTRIM=3)"	## Alternative for trimming the commandline path
-alias m_cmdline_wrap_disable="(set -x; tput rmam)"
-alias m_cmdline_wrap_enable="(set -x; tput smam)"
-
-alias egrep='egrep --color'
-alias fgrep='fgrep --color'
-
-## Colorize the ls output ##
-alias ls='ls --color=auto'
-## Use a long listing format ##
-alias ll='ls -la'
-## Show hidden files ##
-alias l.='ls -d .* --color=auto'
-## a quick way to get out of current directory ##
+alias c='clear'
 alias cd..='cd ..'
 alias ..='cd ..'
-alias ...='cd ../../../'
-alias ....='cd ../../../../'
-alias .....='cd ../../../../'
+alias ...='cd ../../..'
+alias ....='cd ../../../..'
+alias .....='cd ../../../../..'
 
-#4: Start calculator with math support
+# ============================================================================
+# LS ALIASES
+# ============================================================================
+
+alias ls='ls --color=auto'
+alias ll='ls -lah'
+alias la='ls -A'
+alias l='ls -CF'
+alias l.='ls -d .* --color=auto'
+
+# ============================================================================
+# GREP ALIASES
+# ============================================================================
+
+alias grep='grep --color=auto'
+alias egrep='egrep --color=auto'
+alias fgrep='fgrep --color=auto'
+
+# ============================================================================
+# UTILITIES
+# ============================================================================
+
+# Calculator with math support
 alias bc='bc -l'
 
-#colorscript -r
+# Tree-like directory structure (if tree command not available)
+function tree_impl() {
+  ls -aR | grep ":$" | perl -pe 's/:$//;s/[^-][^\/]*\//    /g;s/^    (\S)/└── \1/;s/(^    |    (?= ))/│   /g;s/    (\S)/└── \1/'
+}
