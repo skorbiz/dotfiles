@@ -1,6 +1,8 @@
 #!/bin/bash
+
 # Install zsh, oh-my-zsh, and plugins
 # Note: Requires sudo access or packages to be pre-installed
+
 set -euo pipefail
 
 if command -v shellcheck >/dev/null 2>&1; then
