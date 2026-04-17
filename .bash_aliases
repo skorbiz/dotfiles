@@ -160,7 +160,7 @@ function v() {
   fi
   echo "Connecting to container: $container"
   # Try zsh first, fallback to bash if not available
-  if docker exec -it -w /workspaces/ --user dev "$container" command -v zsh >/dev/null 2>&1; then
+  if docker exec -w /workspaces/ --user dev "$container" sh -c 'command -v zsh' >/dev/null 2>&1; then
     docker exec -it -w /workspaces/ --user dev "$container" zsh
   else
     docker exec -it -w /workspaces/ --user dev "$container" bash
