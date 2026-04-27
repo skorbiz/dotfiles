@@ -153,11 +153,27 @@ function git_stash_difftool() {
 
 # Enter VS Code devcontainer (tries zsh, falls back to bash)
 function v() {
-  local container=$(docker ps | grep vsc- | grep -oE "[^ ]+$")
-  if [ -z "$container" ]; then
+  local containers
+  containers=$(docker ps | grep vsc- | grep -oE "[^ ]+$")
+  
+  if [ -z "$containers" ]; then
     echo "No VS Code devcontainer found"
     return 1
   fi
+  
+  local container
+  local count=$(echo "$containers" | awk 'END {print NR}')
+  
+  if [ "$count" -eq 1 ]; then
+    container="$containers"
+  else
+    echo "Multiple devcontainers found:"
+    echo "$containers" | nl
+    printf "Select container (1-$count): "
+    read choice
+    container=$(echo "$containers" | sed -n "${choice}p")
+  fi
+  
   echo "Connecting to container: $container"
   # Try zsh first, fallback to bash if not available
   if docker exec -w /workspaces/ --user dev "$container" sh -c 'command -v zsh' >/dev/null 2>&1; then
