@@ -142,3 +142,13 @@ zstyle ':completion:*:*:docker-*:*' option-stacking yes
 # Automatically added by install fzt
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
+export PATH="/home/jsl/.npm-global/bin:$PATH"
+
+# Add pre-commit to PATH for git hook management
+export PATH=/usr/local/py-utils/bin:$PATH
+
+# AsyncAPI CLI Autocomplete
+
+ASYNCAPI_AC_ZSH_SETUP_PATH=/home/jsl/.cache/@asyncapi/cli/autocomplete/zsh_setup && test -f $ASYNCAPI_AC_ZSH_SETUP_PATH && source $ASYNCAPI_AC_ZSH_SETUP_PATH; # asyncapi autocomplete setup
+
+
