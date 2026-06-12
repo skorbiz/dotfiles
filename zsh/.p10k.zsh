@@ -49,6 +49,7 @@
   # Left prompt segments.
   typeset -g POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(
     # =========================[ Line #1 ]=========================
+    docker_indicator          # docker container indicator
     context                   # user@host
     dir                       # current directory
     vcs                       # git status
@@ -151,6 +152,10 @@
   # Remove space between '⇣' and '⇡' and all trailing spaces.
   typeset -g POWERLEVEL9K_VCS_CONTENT_EXPANSION='${${${P9K_CONTENT/⇣* :⇡/⇣⇡}// }//:/ }'
 
+  # Docker container indicator - shows 🐳 when inside a Docker container
+  typeset -g POWERLEVEL9K_DOCKER_INDICATOR_FOREGROUND=$cyan
+  typeset -g POWERLEVEL9K_DOCKER_INDICATOR_CONTENT_EXPANSION='🐳'
+
   # Grey current time.
   typeset -g POWERLEVEL9K_TIME_FOREGROUND=$grey
   # Format for the current time: 09:51:02. See `man 3 strftime`.
@@ -197,3 +202,11 @@ typeset -g POWERLEVEL9K_CONFIG_FILE=${${(%):-%x}:a}
 
 (( ${#p10k_config_opts} )) && setopt ${p10k_config_opts[@]}
 'builtin' 'unset' 'p10k_config_opts'
+
+# Custom prompt segment to detect Docker container
+function prompt_docker_indicator() {
+  # Check if we're inside a Docker container
+  if [[ -f /.dockerenv ]] || grep -q docker /proc/1/cgroup 2>/dev/null; then
+    p10k segment -f $POWERLEVEL9K_DOCKER_INDICATOR_FOREGROUND -t "$POWERLEVEL9K_DOCKER_INDICATOR_CONTENT_EXPANSION"
+  fi
+}
