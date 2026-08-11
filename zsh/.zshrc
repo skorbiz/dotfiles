@@ -147,8 +147,15 @@ export PATH="/home/jsl/.npm-global/bin:$PATH"
 # Add pre-commit to PATH for git hook management
 export PATH=/usr/local/py-utils/bin:$PATH
 
-# AsyncAPI CLI Autocomplete
+# Add workspace node_modules/.bin to PATH so nx and other local binaries are
+# available in all shells (including non-VS Code sessions like docker exec).
+export PATH="/workspaces/mezcada/node_modules/.bin:$PATH"
 
+
+# Load local overrides if they exist (for testing without committing)
+[[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
+
+# AsyncAPI CLI Autocomplete
 ASYNCAPI_AC_ZSH_SETUP_PATH=/home/jsl/.cache/@asyncapi/cli/autocomplete/zsh_setup && test -f $ASYNCAPI_AC_ZSH_SETUP_PATH && source $ASYNCAPI_AC_ZSH_SETUP_PATH; # asyncapi autocomplete setup
 
 
